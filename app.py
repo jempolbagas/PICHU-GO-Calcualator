@@ -2,9 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # --- CONFIGURATION ---
-# 1. Create a Google Sheet (See INSTRUCTIONS.md)
-# 2. Paste the ID (the text between /d/ and /edit in the URL) here:
-SHEET_ID = "1_x-6kUiAe5UJh0iTNXbm13bUiLiZwPfBiE305q2vZgQ" 
+SHEET_ID = st.secrets["SHEET_ID"] 
 
 # Defaults (Used if sheet is unreachable or internet is down)
 DEFAULT_CONFIG = {
@@ -14,7 +12,7 @@ DEFAULT_CONFIG = {
     'ongkir_kr': 2000  # Default Shipping KRW (Standard)
 }
 
-st.set_page_config(page_title="Kalkulator Jastip", page_icon="🇰🇷")
+st.set_page_config(page_title="PICHU GO CALCULATOR", page_icon="🇰🇷")
 
 # --- HELPER: FETCH DATA FROM GOOGLE SHEET ---
 @st.cache_data(ttl=300) # Check for updates every 5 minutes
@@ -25,11 +23,9 @@ def get_config():
     csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
     
     try:
-        # Read CSV. Expecting Column A (Name) and Column B (Value)
         df = pd.read_csv(csv_url, header=None, names=['key', 'value'])
         config = pd.Series(df.value.values, index=df.key).to_dict()
         
-        # Ensure values are numbers
         for key in config:
             try:
                 config[key] = float(config[key])
@@ -42,7 +38,7 @@ def get_config():
 # --- APP START ---
 config, status = get_config()
 
-st.title("🇰🇷 Kalkulator Jastip Pro")
+st.title("🇰🇷 PICHU GO CALCULATOR")
 st.caption(f"Status: {status}")
 
 # --- INPUTS ---
@@ -56,7 +52,7 @@ with col1:
         format="%.2f",
         help="Masukkan 1.0 untuk 10,000 KRW"
     )
-    # New Input: Ongkir Korea (Defaults to value from Sheet)
+    
     default_ongkir = config.get('ongkir_kr', 2000)
     ongkir_input = st.number_input(
         "🚚 Ongkir Lokal Korea (Won)",
@@ -77,7 +73,7 @@ with col2:
 
 # --- CALCULATION LOGIC ---
 if st.button("Hitung Harga Bersih", type="primary", use_container_width=True):
-    # 1. Fetch Variables from Sheet
+    # 1. Config Values
     rate = config.get('rate', 15)
     admin_go = config.get('admin_go', 5000)
     jasa_tf = config.get('jasa_tf', 10000)
@@ -86,7 +82,7 @@ if st.button("Hitung Harga Bersih", type="primary", use_container_width=True):
     item_krw = harga_input * 10000 
     item_idr = item_krw * rate
     
-    # Shared Costs (Using the INPUT ongkir, not the fixed one)
+    # 3. Sharing Cost
     shipping_idr = ongkir_input * rate 
     total_shared_cost = shipping_idr + jasa_tf 
     shared_cost_per_person = total_shared_cost / pembeli 
