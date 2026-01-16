@@ -39,7 +39,11 @@ def get_config():
 config, status = get_config()
 
 st.title("🇰🇷 PICHU GO CALCULATOR")
-st.caption(f"Status: {status}")
+
+# --- METRICS ---
+col_m1, col_m2 = st.columns(2)
+col_m1.metric("Exchange Rate", f"1 KRW = {config.get('rate', 15)} IDR")
+col_m2.metric("Data Source", status)
 
 # --- INPUTS ---
 col1, col2 = st.columns(2)
@@ -63,44 +67,44 @@ with col1:
     )
 
 with col2:
-    pembeli = st.number_input(
+    pembeli = st.slider(
         "👥 Jumlah Sharing (Orang)", 
-        min_value=1, 
+        min_value=1,
+        max_value=50,
         value=1, 
         step=1,
         help="Jumlah orang dalam Group Order"
     )
 
 # --- CALCULATION LOGIC ---
-if st.button("Hitung Harga Bersih", type="primary", use_container_width=True):
-    # 1. Config Values
-    rate = config.get('rate', 15)
-    admin_go = config.get('admin_go', 5000)
-    jasa_tf = config.get('jasa_tf', 10000)
+# 1. Config Values
+rate = config.get('rate', 15)
+admin_go = config.get('admin_go', 5000)
+jasa_tf = config.get('jasa_tf', 10000)
 
-    # 2. Logic
-    item_krw = harga_input * 10000 
-    item_idr = item_krw * rate
-    
-    # 3. Sharing Cost
-    shipping_idr = ongkir_input * rate 
-    total_shared_cost = shipping_idr + jasa_tf 
-    shared_cost_per_person = total_shared_cost / pembeli 
-    
-    # Total
-    total = item_idr + admin_go + shared_cost_per_person
-    total_rounded = round(total, -2)
+# 2. Logic
+item_krw = harga_input * 10000
+item_idr = item_krw * rate
 
-    # --- DISPLAY ---
-    st.markdown(f"""
-    <div style="text-align: center; padding: 20px; background-color: #e6fffa; border: 1px solid #b2f5ea; border-radius: 10px; margin-bottom: 20px;">
-        <h2 style="color: #2c7a7b; margin:0;">Rp {total_rounded:,.0f}</h2>
-        <p style="margin:0; font-size: 0.9rem; color: #285e61;">Harga Bersih per Item</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    with st.expander("📝 Rincian Biaya (Klik untuk lihat)"):
-        st.write(f"Harga Barang: Rp {item_idr:,.0f} (Rate {rate})")
-        st.write(f"Admin GO: Rp {admin_go:,.0f}")
-        st.write(f"Sharing ({pembeli} org): Rp {shared_cost_per_person:,.0f}/org")
-        st.caption(f"(Ongkir {ongkir_input} KRW + Jasa TF {jasa_tf}) ÷ {pembeli}")
+# 3. Sharing Cost
+shipping_idr = ongkir_input * rate
+total_shared_cost = shipping_idr + jasa_tf
+shared_cost_per_person = total_shared_cost / pembeli
+
+# Total
+total = item_idr + admin_go + shared_cost_per_person
+total_rounded = round(total, -2)
+
+# --- DISPLAY ---
+st.markdown(f"""
+<div style="text-align: center; padding: 20px; background-color: #e6fffa; border: 1px solid #b2f5ea; border-radius: 10px; margin-bottom: 20px;">
+    <h2 style="color: #2c7a7b; margin:0;">Rp {total_rounded:,.0f}</h2>
+    <p style="margin:0; font-size: 0.9rem; color: #285e61;">Harga Bersih per Item</p>
+</div>
+""", unsafe_allow_html=True)
+
+with st.expander("📝 Rincian Biaya (Klik untuk lihat)"):
+    st.write(f"Harga Barang: Rp {item_idr:,.0f} (Rate {rate})")
+    st.write(f"Admin GO: Rp {admin_go:,.0f}")
+    st.write(f"Sharing ({pembeli} org): Rp {shared_cost_per_person:,.0f}/org")
+    st.caption(f"(Ongkir {ongkir_input} KRW + Jasa TF {jasa_tf}) ÷ {pembeli}")
