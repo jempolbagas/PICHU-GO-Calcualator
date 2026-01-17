@@ -2,7 +2,10 @@ import streamlit as st
 import pandas as pd
 
 # --- CONFIGURATION ---
-SHEET_ID = st.secrets["SHEET_ID"] 
+try:
+    SHEET_ID = st.secrets.get("SHEET_ID")
+except Exception:
+    SHEET_ID = None
 
 # Defaults (Used if sheet is unreachable or internet is down)
 DEFAULT_CONFIG = {
@@ -17,7 +20,8 @@ st.set_page_config(page_title="PICHU GO CALCULATOR", page_icon="🇰🇷")
 # --- HELPER: FETCH DATA FROM GOOGLE SHEET ---
 @st.cache_data(ttl=300) # Check for updates every 5 minutes
 def get_config():
-    if SHEET_ID == "YOUR_SHEET_ID_HERE":
+    if not SHEET_ID or SHEET_ID == "YOUR_SHEET_ID_HERE":
+        print("⚠️ SHEET_ID is missing. Using default configuration.")
         return DEFAULT_CONFIG, "⚠️ Default (Sheet ID Not Set)"
     
     csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv"
@@ -39,6 +43,9 @@ def get_config():
 config, status = get_config()
 
 st.title("🇰🇷 PICHU GO CALCULATOR")
+
+if not SHEET_ID or SHEET_ID == "YOUR_SHEET_ID_HERE":
+    st.sidebar.warning("⚠️ SHEET_ID is missing. Using default configuration.")
 
 # --- METRICS ---
 col_m1, col_m2 = st.columns(2)
@@ -70,7 +77,7 @@ with col2:
     pembeli = st.slider(
         "👥 Jumlah Sharing (Orang)", 
         min_value=1,
-        max_value=50,
+        max_value=20,
         value=1, 
         step=1,
         help="Jumlah orang dalam Group Order"
