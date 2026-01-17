@@ -9,10 +9,13 @@ except Exception:
 
 # Defaults (Used if sheet is unreachable or internet is down)
 DEFAULT_CONFIG = {
-    'rate': 15,        # 1 KRW = 15 IDR
-    'admin_go': 6000,  # Fee Tetap per Barang
-    'jasa_tf': 6000,  # Fee Transfer (Shared)
-    'ongkir_kr': 2000  # Default Shipping KRW (Standard)
+    'admin_go': 6000,
+    'rate_kr': 11.75,
+    'jasa_tf_kr': 6000,
+    'ongkir_kr_default': 2000,
+    'rate_ch': 2450,
+    'jasa_tf_ch': 10000,
+    'ongkir_ch_default': 100
 }
 
 st.set_page_config(page_title="PICHU GO CALCULATOR", page_icon="🇰🇷")
@@ -84,8 +87,7 @@ def get_config():
 # --- APP START ---
 config, status = get_config()
 
-st.title("🇰🇷 PICHU GO CALCULATOR")
-st.info(f"💱 Exchange Rate: 1 KRW = {config.get('rate', 15)} IDR")
+st.title("PICHU GO CALCULATOR")
 
 # --- SIDEBAR STATUS ---
 if "Live" in status:
@@ -96,60 +98,124 @@ else:
 if not SHEET_ID or SHEET_ID == "YOUR_SHEET_ID_HERE":
     st.sidebar.warning("⚠️ SHEET_ID is missing. Using default configuration.")
 
-# --- INPUTS ---
-col1, col2 = st.columns(2)
+# --- TABS ---
+tab_kr, tab_ch = st.tabs(["🇰🇷 Korea", "🇨🇳 China"])
 
-with col1:
-    harga_input = st.number_input(
-        "💰 Harga Produk (0.1 = 1,000 Won)", 
-        min_value=0.0, 
-        step=0.01, 
-        format="%.2f",
-        help="Masukkan 1.0 untuk 10,000 KRW"
-    )
+# --- COMMON VARIABLES ---
+admin_go = config.get('admin_go', 6000)
+
+# --- KOREA TAB ---
+with tab_kr:
+    # Configs
+    rate_kr = config.get('rate_kr', 11.75)
+    jasa_tf_kr = config.get('jasa_tf_kr', 6000)
+    ongkir_kr_default = config.get('ongkir_kr_default', 2000)
+
+    st.info(f"💱 Exchange Rate: 1 KRW = {rate_kr} IDR")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        kr_price_input = st.number_input(
+            "💰 Harga Produk (0.1 = 1,000 Won)",
+            min_value=0.0,
+            step=0.01,
+            format="%.2f",
+            help="Masukkan 1.0 untuk 10,000 KRW",
+            key="kr_price"
+        )
+
+        kr_ongkir_input = st.number_input(
+            "🚚 Ongkir Lokal Korea (Won)",
+            min_value=0,
+            value=int(ongkir_kr_default),
+            step=500,
+            help="Biasanya 2000-4000 Won. Ubah jika beda.",
+            key="kr_ongkir"
+        )
+
+    with col2:
+        kr_people = st.slider(
+            "👥 Jumlah Sharing (Orang)",
+            min_value=1,
+            max_value=50,
+            value=1,
+            step=1,
+            help="Jumlah orang dalam Group Order",
+            key="kr_people"
+        )
+
+    # Logic
+    # Item_Price_IDR = (Input_Value * 10000) * rate_kr
+    kr_item_idr = (kr_price_input * 10000) * rate_kr
     
-    default_ongkir = config.get('ongkir_kr', 2000)
-    ongkir_input = st.number_input(
-        "🚚 Ongkir Lokal Korea (Won)",
-        min_value=0,
-        value=int(default_ongkir),
-        step=500,
-        help="Biasanya 2000-4000 Won. Ubah jika beda."
-    )
+    # Shared_Fees_IDR = (Ongkir_Input * rate_kr + jasa_tf_kr) / Number_of_People
+    kr_shared_fees = (kr_ongkir_input * rate_kr + jasa_tf_kr) / kr_people
 
-with col2:
-    pembeli = st.slider(
-        "👥 Jumlah Sharing (Orang)", 
-        min_value=1,
-        max_value=50,
-        value=1, 
-        step=1,
-        help="Jumlah orang dalam Group Order"
-    )
+    # Total
+    kr_total = kr_item_idr + admin_go + kr_shared_fees
+    kr_total_rounded = round(kr_total, -2)
 
-# --- CALCULATION LOGIC ---
-# 1. Config Values
-rate = config.get('rate', 15)
-admin_go = config.get('admin_go', 5000)
-jasa_tf = config.get('jasa_tf', 10000)
+    st.markdown(f"""
+    <div class="result-card">
+        <h2>Rp {kr_total_rounded:,.0f}</h2>
+        <p>Harga Bersih per Item</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# 2. Logic
-item_krw = harga_input * 10000
-item_idr = item_krw * rate
+# --- CHINA TAB ---
+with tab_ch:
+    # Configs
+    rate_ch = config.get('rate_ch', 2450)
+    jasa_tf_ch = config.get('jasa_tf_ch', 10000)
+    ongkir_ch_default = config.get('ongkir_ch_default', 100)
 
-# 3. Sharing Cost
-shipping_idr = ongkir_input * rate
-total_shared_cost = shipping_idr + jasa_tf
-shared_cost_per_person = total_shared_cost / pembeli
+    st.info(f"💱 Exchange Rate: 1 CNY = {rate_ch} IDR")
 
-# Total
-total = item_idr + admin_go + shared_cost_per_person
-total_rounded = round(total, -2)
+    col1, col2 = st.columns(2)
+    with col1:
+        cn_price_input = st.number_input(
+            "💰 Harga Produk (Yuan)",
+            min_value=0.0,
+            step=1.0,
+            format="%.2f",
+            help="Masukkan harga dalam Yuan (RMB)",
+            key="cn_price"
+        )
 
-# --- DISPLAY ---
-st.markdown(f"""
-<div class="result-card">
-    <h2>Rp {total_rounded:,.0f}</h2>
-    <p>Harga Bersih per Item</p>
-</div>
-""", unsafe_allow_html=True)
+        cn_ongkir_input = st.number_input(
+            "🚚 Ongkir Lokal China (Yuan)",
+            min_value=0,
+            value=int(ongkir_ch_default),
+            step=1,
+            help="Range: 1-1000 Yuan",
+            key="cn_ongkir"
+        )
+
+    with col2:
+        cn_people = st.slider(
+            "👥 Jumlah Sharing (Orang)",
+            min_value=1,
+            max_value=50,
+            value=1,
+            step=1,
+            help="Jumlah orang dalam Group Order",
+            key="cn_people"
+        )
+
+    # Logic
+    # Item_Price_IDR = Input_Value * rate_ch
+    cn_item_idr = cn_price_input * rate_ch
+
+    # Shared_Fees_IDR = (Ongkir_Input * rate_ch + jasa_tf_ch) / Number_of_People
+    cn_shared_fees = (cn_ongkir_input * rate_ch + jasa_tf_ch) / cn_people
+
+    # Total
+    cn_total = cn_item_idr + admin_go + cn_shared_fees
+    cn_total_rounded = round(cn_total, -2)
+
+    st.markdown(f"""
+    <div class="result-card">
+        <h2>Rp {cn_total_rounded:,.0f}</h2>
+        <p>Harga Bersih per Item</p>
+    </div>
+    """, unsafe_allow_html=True)
