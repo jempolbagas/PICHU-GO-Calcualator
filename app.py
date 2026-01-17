@@ -38,27 +38,65 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
     
+    /* 1. GLOBAL AURORA BACKGROUND */
+    .stApp {
+        background-color: #FFF5F7;
+        background-image:
+            radial-gradient(at 10% 10%, hsla(333, 100%, 86%, 1) 0, transparent 50%),
+            radial-gradient(at 90% 90%, hsla(320, 100%, 90%, 1) 0, transparent 50%);
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
     /* Clean up the top spacing */
     .block-container {
         padding-top: 2rem;
     }
 
-    /* EXISTING KOREA STYLE (Rename strictly to result-card-kr if you want, or keep generic) */
-    .result-card {
-        background-color: #ffffff;
-        padding: 24px;
-        border-radius: 16px;
-        border: 2px solid #fce7f3; /* Very subtle border */
-        border-left: 8px solid #d53f8c; /* Strong indicator */
-        box-shadow: 0 10px 25px -5px rgba(213, 63, 140, 0.15); /* Pink glow */
+    /* 2. KOREA GLASS CARD CONTAINER */
+    .glass-card-kr {
+        background: rgba(255, 255, 255, 0.65);
+        box-shadow: 0 8px 32px 0 rgba(213, 63, 140, 0.20);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 24px;
+        padding: 30px;
         margin-top: 20px;
-        transition: transform 0.2s;
-    }
-    .result-card:hover {
-        transform: translateY(-2px); /* Micro-interaction */
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
     }
 
-    /* CHINA CARD: White bg, Red Border, Soft Red Shadow */
+    /* 3. KOREA CARD INNER TYPOGRAPHY (Cleaned from Python) */
+    .glass-card-kr h1 {
+        color: #702459;
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 10px 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .glass-card-kr p.label {
+        color: #97266D;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+
+    .glass-card-kr .breakdown-pill {
+        display: inline-flex;
+        gap: 15px;
+        background: rgba(255,255,255,0.5);
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        color: #702459;
+        margin-top: 10px;
+    }
+
+    /* EXISTING CHINA STYLES (UNTOUCHED) */
     .result-card-cn {
         background-color: #ffffff;
         padding: 24px;
@@ -186,18 +224,10 @@ with tab_kr:
     kr_total_rounded = round(kr_total, -2)
 
     st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, #FFF5F7 0%, #FED7E2 100%);
-        border-radius: 16px;
-        padding: 20px;
-        border: 1px solid #FBB6CE;
-        box-shadow: 0 4px 15px rgba(213, 63, 140, 0.15);
-        margin-top: 20px;
-        text-align: center;
-    ">
-        <p style="color: #97266D; font-size: 0.9rem; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 1px;">🇰🇷 Estimated Total</p>
-        <h1 style="color: #702459; font-size: 2.5rem; font-weight: 700; margin: 5px 0;">Rp {kr_total_rounded:,.0f}</h1>
-        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 0.85rem; color: #555;">
+    <div class="glass-card-kr">
+        <p class="label">🇰🇷 Estimated Total</p>
+        <h1>Rp {kr_total_rounded:,.0f}</h1>
+        <div class="breakdown-pill">
             <span>📦 Price: {kr_item_idr:,.0f}</span>
             <span>•</span>
             <span>✈️ Fees: {kr_shared_fees + admin_go:,.0f}</span>
