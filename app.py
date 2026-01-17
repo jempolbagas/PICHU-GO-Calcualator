@@ -43,7 +43,7 @@ def get_config():
             else:
                 print(f"⚠️ Key '{key}' missing in Google Sheet. Using default.")
 
-        return config, "✅ Live from Google Sheet"
+        return config, "✅ Live from Database"
     except Exception as e:
         print(f"Error fetching Google Sheet: {e}")
         return DEFAULT_CONFIG, "⚠️ Connection Failed (Using Defaults)"
