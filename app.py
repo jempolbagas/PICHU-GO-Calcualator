@@ -120,7 +120,7 @@ with col2:
     pembeli = st.slider(
         "👥 Jumlah Sharing (Orang)", 
         min_value=1,
-        max_value=20,
+        max_value=50,
         value=1, 
         step=1,
         help="Jumlah orang dalam Group Order"
@@ -152,9 +152,3 @@ st.markdown(f"""
     <p>Harga Bersih per Item</p>
 </div>
 """, unsafe_allow_html=True)
-
-with st.expander("📝 Rincian Biaya (Klik untuk lihat)"):
-    st.write(f"Harga Barang: Rp {item_idr:,.0f} (Rate {rate})")
-    st.write(f"Admin GO: Rp {admin_go:,.0f}")
-    st.write(f"Sharing ({pembeli} org): Rp {shared_cost_per_person:,.0f}/org")
-    st.caption(f"(Ongkir {ongkir_input} KRW + Jasa TF {jasa_tf}) ÷ {pembeli}")
