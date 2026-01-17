@@ -1,6 +1,6 @@
 [theme]
-primaryColor = "#F63366"   # A vibrant pink for buttons/sliders
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6" # Light grey for sidebar
-textColor = "#262730"
+primaryColor =              "#D53F8C"   # Deep Pink (for sliders/active states)
+backgroundColor =           "#FFF5F7"   # Very pale blush (page background)
+secondaryBackgroundColor =  "#FED7E2"   # Soft pink (sidebar/input boxes)
+textColor =                 "#2D3748"   # Dark Slate (easy to read contrast)
 font = "sans serif"

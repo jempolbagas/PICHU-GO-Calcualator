@@ -20,7 +20,6 @@ st.set_page_config(page_title="PICHU GO CALCULATOR", page_icon="🇰🇷")
 # --- CUSTOM CSS ---
 st.markdown("""
     <style>
-    /* Reduce top padding */
     .block-container {
         padding-top: 2rem;
         padding-bottom: 2rem;
@@ -30,21 +29,23 @@ st.markdown("""
     .result-card {
         background-color: white;
         border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: 2px solid #319795; /* Teal */
+        box-shadow: 0 10px 20px rgba(213, 63, 140, 0.15); /* Soft pink shadow */
+        border: 2px solid #D53F8C; /* Deep Pink Border */
         padding: 20px;
         text-align: center;
         margin-bottom: 20px;
     }
     .result-card h2 {
-        color: #319795;
+        color: #D53F8C; /* Deep Pink Text */
         margin: 0;
-        font-weight: bold;
+        font-weight: 800;
+        font-size: 2.5rem;
     }
     .result-card p {
         margin: 0;
-        font-size: 0.9rem;
-        color: #2c7a7b;
+        font-size: 1rem;
+        color: #718096; /* Soft Grey for subtitle */
+        font-weight: 500;
     }
     </style>
 """, unsafe_allow_html=True)
