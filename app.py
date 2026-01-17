@@ -17,6 +17,38 @@ DEFAULT_CONFIG = {
 
 st.set_page_config(page_title="PICHU GO CALCULATOR", page_icon="🇰🇷")
 
+# --- CUSTOM CSS ---
+st.markdown("""
+    <style>
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    /* Result Card Styling */
+    .result-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border: 2px solid #319795; /* Teal */
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .result-card h2 {
+        color: #319795;
+        margin: 0;
+        font-weight: bold;
+    }
+    .result-card p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #2c7a7b;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # --- HELPER: FETCH DATA FROM GOOGLE SHEET ---
 @st.cache_data(ttl=300) # Check for updates every 5 minutes
 def get_config():
@@ -52,14 +84,16 @@ def get_config():
 config, status = get_config()
 
 st.title("🇰🇷 PICHU GO CALCULATOR")
+st.info(f"💱 Exchange Rate: 1 KRW = {config.get('rate', 15)} IDR")
+
+# --- SIDEBAR STATUS ---
+if "Live" in status:
+    st.sidebar.success(f"Data Source: {status}")
+else:
+    st.sidebar.warning(f"Data Source: {status}")
 
 if not SHEET_ID or SHEET_ID == "YOUR_SHEET_ID_HERE":
     st.sidebar.warning("⚠️ SHEET_ID is missing. Using default configuration.")
-
-# --- METRICS ---
-col_m1, col_m2 = st.columns(2)
-col_m1.metric("Exchange Rate", f"1 KRW = {config.get('rate', 15)} IDR")
-col_m2.metric("Data Source", status)
 
 # --- INPUTS ---
 col1, col2 = st.columns(2)
@@ -113,9 +147,9 @@ total_rounded = round(total, -2)
 
 # --- DISPLAY ---
 st.markdown(f"""
-<div style="text-align: center; padding: 20px; background-color: #e6fffa; border: 1px solid #b2f5ea; border-radius: 10px; margin-bottom: 20px;">
-    <h2 style="color: #2c7a7b; margin:0;">Rp {total_rounded:,.0f}</h2>
-    <p style="margin:0; font-size: 0.9rem; color: #285e61;">Harga Bersih per Item</p>
+<div class="result-card">
+    <h2>Rp {total_rounded:,.0f}</h2>
+    <p>Harga Bersih per Item</p>
 </div>
 """, unsafe_allow_html=True)
 
