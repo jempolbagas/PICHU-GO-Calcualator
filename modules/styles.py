@@ -2,7 +2,7 @@
 
 HIDE_ST_STYLE = """
     <style>
-    MainMenu {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     </style>
