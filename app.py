@@ -12,7 +12,34 @@ st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 # --- CONFIGURATION ---
 config, status = get_config()
 
-st.title("PICHU GO CALCULATOR")
+# Replace st.title("PICHU GO CALCULATOR") with this:
+st.markdown("""
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="
+            background: -webkit-linear-gradient(45deg, #702459, #D53F8C, #B83280);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        ">
+            PICHU GO CALCULATOR
+        </h1>
+        <p style="
+            color: #702459;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.7;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        ">
+            Group Order Estimation Tool
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
 # --- SIDEBAR STATUS ---
 if "Live" in status:
