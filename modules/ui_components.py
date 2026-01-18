@@ -114,12 +114,13 @@ def render_china_tab(config):
     cn_total_rounded = round(cn_total, -2)
 
     st.markdown(f"""
-    <div class="result-card-cn">  <h3 style="margin:0; color: #c53030;">🇨🇳 Total Estimation</h3>
-    <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
-        Rp {cn_total_rounded:,.0f}
-    </p>
-    <p style="margin:0; font-size: 14px; opacity: 0.8;">
-        Rate: {rate_ch} | Ongkir: {cn_ongkir_input} Yuan
-    </p>
+    <div class="result-card-cn">
+        <h3 style="margin:0; color: #c53030;">🇨🇳 Total Estimation</h3>
+        <p style="font-size: 24px; font-weight: bold; margin: 10px 0;">
+            Rp {cn_total_rounded:,.0f}
+        </p>
+        <p style="margin:0; font-size: 14px; opacity: 0.8;">
+            Rate: {rate_ch} | Ongkir: {cn_ongkir_input} Yuan
+        </p>
     </div>
     """, unsafe_allow_html=True)
