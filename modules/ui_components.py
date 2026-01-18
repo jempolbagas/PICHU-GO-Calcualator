@@ -1,3 +1,4 @@
+"""UI rendering functions for Korea and China calculator tabs."""
 import streamlit as st
 from modules.calculator import calculate_korea, calculate_china
 

@@ -13,7 +13,10 @@ DEFAULT_CONFIG = {
     'ongkir_ch_default': 100
 }
 
-@st.cache_data(ttl=300) # Check for updates every 5 minutes
+# Cache TTL in seconds (5 minutes)
+CACHE_TTL_SECONDS = 300
+
+@st.cache_data(ttl=CACHE_TTL_SECONDS) # Check for updates every 5 minutes
 def get_config():
     try:
         sheet_id = st.secrets.get("SHEET_ID")
