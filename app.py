@@ -24,7 +24,7 @@ try:
     if not st.secrets.get("SHEET_ID") or st.secrets.get("SHEET_ID") == "YOUR_SHEET_ID_HERE":
         st.sidebar.warning("⚠️ SHEET_ID is missing. Using default configuration.")
 except Exception:
-     st.sidebar.warning("⚠️ Secrets not found. Using default configuration.")
+    st.sidebar.warning("⚠️ Secrets not found. Using default configuration.")
 
 # --- TABS ---
 tab_kr, tab_ch = st.tabs(["🇰🇷 Korea", "🇨🇳 China"])
