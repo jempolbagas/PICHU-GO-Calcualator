@@ -1,4 +1,5 @@
 # modules/calculator.py
+"""Calculation functions for Korea and China group order cost estimation."""
 
 def calculate_korea(input_price, ongkir, people, rate_kr, jasa_tf_kr, admin_go):
     """
